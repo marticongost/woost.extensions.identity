@@ -1,0 +1,8 @@
+
+[woost.models.settings]
+
+    [x_identity_providers]
+    ca: Serveis d'autenticació d'usuaris
+    es: Servicios de autenticación de usuarios
+    en: User authentication services
+
