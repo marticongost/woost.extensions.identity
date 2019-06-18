@@ -1,1 +1,6 @@
 
+[woost.extensions.identity.admin.sections.IdentitySettings.instance]
+ca: Proveïdors d'autenticació
+es: Proveedores de autenticación
+en: Authentication providers
+
