@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Pepe Osca <pepe.osca@whads.com>
 """
@@ -15,7 +15,7 @@ from cocktail.controllers import (
     get_request_root_url_builder
 )
 from woost import app
-from woost.controllers import CMSController
+from woost.controllers.cmscontroller import CMSController
 
 from .identityprovider import GoogleIdentityProvider
 
@@ -82,16 +82,16 @@ class GoogleOAuthProviderController(Controller):
             redirect(flow.step1_get_authorize_url())
 
         if self.provider.debug_mode:
-            print styled("Google authorization code:", "magenta"), code
+            print(styled("Google authorization code:", "magenta"), code)
 
         credentials = flow.step2_exchange(code)
         session[SESSION_PREFIX + "credentials"] = credentials
 
         if self.provider.debug_mode:
-            print styled("Google refresh token:", "magenta"),
-            print credentials.refresh_token
-            print styled("Google access token:", "magenta"),
-            print credentials.access_token
+            print(styled("Google refresh token:", "magenta"), end=' ')
+            print(credentials.refresh_token)
+            print(styled("Google access token:", "magenta"), end=' ')
+            print(credentials.access_token)
 
         redirect(self.step_url(2))
 
@@ -108,7 +108,7 @@ class GoogleOAuthProviderController(Controller):
         user_data = oauth2_service.userinfo().get().execute()
 
         if self.provider.debug_mode:
-            print styled("Google user profile:", "magenta"), user_data
+            print(styled("Google user profile:", "magenta"), user_data)
 
         self.provider.login(user_data)
         del session[SESSION_PREFIX + "credentials"]

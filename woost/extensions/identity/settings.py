@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Pepe Osca <pepe.osca@whads.com>
 """
@@ -13,9 +13,10 @@ translations.load_bundle("woost.extensions.identity.settings")
 add_setting(
     schema.Collection(
         "x_identity_providers",
-        items = schema.Reference(type = IdentityProvider),
-        integral = True
+        items=schema.Reference(type=IdentityProvider),
+        integral=True,
+        bidirectional=True
     ),
-    scope = (Configuration,)
+    scopes = (Configuration,)
 )
 

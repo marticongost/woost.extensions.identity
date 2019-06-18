@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Pepe Osca <pepe.osca@whads.com>
 """
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from cocktail import schema
 from cocktail.controllers import get_request_url

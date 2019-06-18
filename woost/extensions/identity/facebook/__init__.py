@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Pepe Osca <pepe.osca@whads.com>
 """

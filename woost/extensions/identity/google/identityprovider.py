@@ -1,11 +1,11 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Pepe Osca <pepe.osca@whads.com>
 """
 import json
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 
 from cocktail.styled import styled
 from cocktail import schema
@@ -55,7 +55,7 @@ class GoogleIdentityProvider(IdentityProvider):
         return (
             "/google_oauth/%d/step1?%s" % (
                 self.id,
-                urllib.urlencode({
+                urllib.parse.urlencode({
                     "target_url": target_url or str(get_request_url())
                 })
             )
@@ -84,7 +84,7 @@ class GoogleIdentityProvider(IdentityProvider):
             "approval_prompt": "force"
         }
 
-        return "{}?{}".format(OAUTH_URL, urllib.urlencode(params))
+        return "{}?{}".format(OAUTH_URL, urllib.parse.urlencode(params))
 
     def get_refresh_token_from_browser(self, redirect_uri = None):
         """
@@ -122,12 +122,12 @@ class GoogleIdentityProvider(IdentityProvider):
             "grant_type": "authorization_code"
         }
 
-        request = urllib2.Request(url=TOKEN_URL, data=urllib.urlencode(params))
-        json_file = urllib2.urlopen(request).read()
+        request = urllib.request.Request(url=TOKEN_URL, data=urllib.parse.urlencode(params))
+        json_file = urllib.request.urlopen(request).read()
         auth_token = json.loads(json_file)
 
         if self.debug_mode:
-            print styled("Google refresh token:", "magenta"), auth_token
+            print(styled("Google refresh token:", "magenta"), auth_token)
 
         return auth_token
 
@@ -147,25 +147,25 @@ class GoogleIdentityProvider(IdentityProvider):
             "grant_type": "refresh_token"
         }
 
-        request = urllib2.Request(url=TOKEN_URL, data=urllib.urlencode(params))
+        request = urllib.request.Request(url=TOKEN_URL, data=urllib.parse.urlencode(params))
 
         try:
-            json_file = urllib2.urlopen(request).read()
-        except urllib2.HTTPError, e:
+            json_file = urllib.request.urlopen(request).read()
+        except urllib.error.HTTPError as e:
             if self.debug_mode:
-                print styled(
+                print(styled(
                     "Error while obtaining a Google access token from a "
                     "refresh token:",
                     "magenta"
-                )
-                print e.read()
+                ))
+                print(e.read())
             raise
 
         access_token = json.loads(json_file)
 
         if self.debug_mode:
-            print styled("Google access token from refresh token:", "magenta"),
-            print access_token
+            print(styled("Google access token from refresh token:", "magenta"), end=' ')
+            print(access_token)
 
         return access_token
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Pepe Osca <pepe.osca@whads.com>
 """
 import json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 import cherrypy
 from cocktail.styled import styled
@@ -15,7 +15,7 @@ from cocktail.controllers import (
     get_request_root_url_builder
 )
 from woost import app
-from woost.controllers import CMSController
+from woost.controllers.cmscontroller import CMSController
 
 from .identityprovider import FacebookIdentityProvider
 
@@ -57,7 +57,7 @@ class FacebookOAuthProviderController(Controller):
     def step_url(self, step_number):
         url_builder = get_request_root_url_builder()
         url_builder.path = [
-            "facebook_oauth"
+            "facebook_oauth",
             str(self.provider.id),
             "step%d" % step_number
         ]
@@ -79,12 +79,12 @@ class FacebookOAuthProviderController(Controller):
                 'scope': ','.join(self.provider.scope)
             }
             login_uri = 'https://www.facebook.com/dialog/oauth?' + \
-                        urllib.urlencode(params)
+                        urllib.parse.urlencode(params)
 
             redirect(login_uri)
 
         if self.provider.debug_mode:
-            print styled("Facebook authorization code:", "magenta"), code
+            print(styled("Facebook authorization code:", "magenta"), code)
 
         params = {
             'client_id': self.provider.client_id,
@@ -93,9 +93,9 @@ class FacebookOAuthProviderController(Controller):
             'code': code
         }
         token_uri = 'https://graph.facebook.com/v2.3/oauth/access_token?' \
-                    + urllib.urlencode(params)
+                    + urllib.parse.urlencode(params)
 
-        json_file = urllib.urlopen(token_uri).readline()
+        json_file = urllib.request.urlopen(token_uri).readline()
         token_data = json.loads(json_file)
 
         if not token_data.get("access_token"):
@@ -107,8 +107,8 @@ class FacebookOAuthProviderController(Controller):
         session[SESSION_PREFIX + "credentials"] = token_data
 
         if self.provider.debug_mode:
-            print styled("Facebook token data:", "magenta"),
-            print token_data
+            print(styled("Facebook token data:", "magenta"), end=' ')
+            print(token_data)
 
         redirect(self.step_url(2))
 
@@ -127,13 +127,13 @@ class FacebookOAuthProviderController(Controller):
             '&access_token=' + credentials['access_token']
         )
 
-        user_data_file = urllib.urlopen(query).readline()
+        user_data_file = urllib.request.urlopen(query).readline()
         user_data = json.loads(user_data_file)
 
         self.check_step2_errors(user_data)
 
         if self.provider.debug_mode:
-            print styled("Facebook user profile:", "magenta"), user_data
+            print(styled("Facebook user profile:", "magenta"), user_data)
 
         self.provider.login(user_data)
         del session[SESSION_PREFIX + "credentials"]
@@ -155,7 +155,7 @@ class FacebookOAuthProviderController(Controller):
         if "error" in kwargs:
             error_reason = kwargs.get('error_reason', 'Error')
 
-            if error_reason == u'user_denied':
+            if error_reason == 'user_denied':
                 redirect(self.target_url)
             else:
                 raise FacebookOAuthException(error_reason)
