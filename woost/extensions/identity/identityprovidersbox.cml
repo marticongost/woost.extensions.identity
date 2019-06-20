@@ -35,9 +35,14 @@ from woost.models import get_setting
         rel="nofollow"
         data-woost-identity-provider="${provider.__class__.__name__.replace('IdentityProvider', '')}">
 
-        <img
-            py:local_id="identity_provider_icon"
-            src="${normalize_resource_uri('woost://images/%s.png' % provider.__class__.__name__)}"/>
+        <img py:local_id="identity_provider_icon">
+            <?py
+            element["src"] = normalize_resource_uri(
+                "woost.extensions.identity://images/%s.png"
+                % provider.__class__.__name__.replace("IdentityProvider", "").lower()
+            )
+            ?>
+        </img>
 
         <span py:local_id="identity_provider_label">
             ${provider.provider_name}
